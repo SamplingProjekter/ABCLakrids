@@ -3,12 +3,37 @@ title: "ABCLakrids"
 author: "Smilk"
 date: "13 sep 2018"
 output: pdf_document
+fig_caption: yes
 ---
 
 ## Introduktion til data og metode
+Simon har samplet 4 poser ABC lakrids fra haribo fra en kvikly (her kan man overveje samplemetoden).
+Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen (N) formodes at være meget stor, hvorved vi må antage at 1/N og n/N er 0. 
+I samplet har vi oberveret hvilke bogstav hver enhed har. Således er interessevariablen en indikator funktion som kan tage 29 værdier.
+Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
+For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategorizeres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
+Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist 79.75 men vi kan ikke observerer halve bogstaver) 
 
-## Illustration af data (skal nok merges med introduktion)
+```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
+# Read data
+Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
+#Formate data as matrix
+Dat_new <- matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29)
+rownames(Dat_new) <- Dat[,1]
 
+#calculate mean
+mean <- apply(Dat_new,1,mean)
+# Plot data
+df <- barplot(t(na.omit(Dat_new)),beside=TRUE,col = rainbow(4))
+lines(df,rep(na.omit(mean),each=4),lty=2,lwd=1)
+lines(df,rep(mean(na.omit(mean)),each=length(df)),lty=2,col="red")
+legend("topleft",c("L. Mean",paste("T. Mean =",round(mean(mean,na.rm=TRUE),2))),lty = 2,col=c("black","red"))
+```
+
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor y_v(i) betegne indikatorfunktionen for at individ i er en en vokal.
+Fra dette finder vi (jvf Corollary 2.13) at y bar er 0.26 med standardafvigelse 0.049 på tværs af de fire poser og inden for hver pose er den empiriske standardafvielse 0.0493, 0.0482, 0.0494 og 0.0501 for hhv. pose 1, 2, 3 og 4. 
+Til sammenligning forventer vi at det danske alphabet med 29 bogstaver (ink. W) og 9 vokaler har en populations standarderror på 0.052. Tager vi i betragtning at vi ikke har observeret værdier med egenskaben æ eller ø ved at forvente at disse ikke forekommer i ABC lakrids, vil vi forvent en populations standarderror på 0.049. 
+Så forholdet mellem konsonanter og vokaler i en pose ABC lakrids vil vi forvente rammer fordelingen af vokaler og konsinanter i afabetet. 
 ## Uniformt?
 
 ## Test mere?

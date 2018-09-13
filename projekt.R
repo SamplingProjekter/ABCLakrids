@@ -3,6 +3,7 @@ Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
 #Formate data as matrix
 Dat_new <- matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29)
 rownames(Dat_new) <- Dat[,1]
+n_est <- sum(Dat_new,na.rm = TRUE)/4
 
 #calculate mean
 mean <- apply(Dat_new,1,mean)
@@ -11,6 +12,36 @@ df <- barplot(t(na.omit(Dat_new)),beside=TRUE,col = rainbow(4))
 lines(df,rep(na.omit(mean),each=4),lty=2,lwd=1)
 lines(df,rep(mean(na.omit(mean)),each=length(df)),lty=2,col="red")
 legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
+
+
+#X vokal vs. konsonant 
+z <- ifelse(rownames(Dat_new)%in% c("A","E","I",
+                                    "O","U","Y",
+                                    "AE"), TRUE,FALSE)
+y_bar <- sum(Dat_new[z])/(n_est*4)
+y_bar
+
+y_bar1 <- sum(Dat_new[z,1])/sum(Dat_new[,1],na.rm = TRUE)
+y_bar2 <- sum(Dat_new[z,2])/sum(Dat_new[,2],na.rm = TRUE)
+y_bar3 <- sum(Dat_new[z,3])/sum(Dat_new[,3],na.rm = TRUE)
+y_bar4 <- sum(Dat_new[z,4])/sum(Dat_new[,4],na.rm = TRUE)
+
+y_barP <- c(y_bar1,y_bar2,y_bar3,y_bar4)
+
+v9 <- 9/29 #vowels in danish alphabet
+v7 <- 7/27 #expected vowels based on what we sample 
+
+
+# with variance estimator
+var_emp <- (1-0)*y_bar*(1-y_bar)/n_est
+var_emp
+var_p <- y_barP*(1-y_barP)/colSums(Dat_new,na.rm=TRUE)
+
+# with variariance based on "true" alphabet
+var_t_v9 <- 1*v9*(1-v9)/n_est
+var_t_v7 <- v7*(1-v7)/n_est
+# which is very close to the variation we see in the alphabeth. 
+
 
 # Total number of letters pr. pag
 total_b <- rowSums(Dat_new/4)
@@ -38,7 +69,7 @@ pii <- (rowSums(Dat_new))/(sum(Dat_new,na.rm=TRUE))
 round(pii,4)
 
 
-# Det er mærkeligt
+# Det er m?rkeligt
 pij <- pii["A"]*(rowSums(Dat_new)["B"]/4)/(sum(Dat_new,na.rm = TRUE)/4-1)
 pij <- t(matrix(rep(na.omit(pii),27),ncol=27))*
   matrix(rep(rowSums(na.omit(Dat_new))/4,27),ncol=27)/
