@@ -14,31 +14,56 @@ Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umul
 For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategorizeres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
 Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist 79.75 men vi kan ikke observerer halve bogstaver) 
 
-## Overvejelser sammenlignet med alfabetet. (klade)
+## Overvejelser sammenlignet med alfabetet.
 ```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
 # Read data
 Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
 #Formate data as matrix
-Dat_new <- matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29)
-rownames(Dat_new) <- Dat[,1]
+Dat_new <- na.omit(matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29))
+rownames(Dat_new) <- Dat[-c(28,29),1]
 
-#calculate mean
-mean <- apply(Dat_new,1,mean)
+# Sample size
+n <- colSums(Dat_new)
+n_mean <- sum(Dat_new)/4
+
 # Plot data
-df <- barplot(t(na.omit(Dat_new)),beside=TRUE,col = rainbow(4))
-lines(df,rep(na.omit(mean),each=4),lty=2,lwd=1)
-lines(df,rep(mean(na.omit(mean)),each=length(df)),lty=2,col="red")
-legend("topleft",c("L. Mean",paste("T. Mean =",round(mean(mean,na.rm=TRUE),2))),lty = 2,col=c("black","red"))
+mean <- apply(Dat_new,1,mean)
+df <- barplot(t(Dat_new),beside=TRUE,col = rainbow(4))
+lines(df,rep(mean,each=4),lty=2,lwd=1)
+lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
+legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
 Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor y_v(i) betegne indikatorfunktionen for at individ i er en en vokal.
-Fra dette finder vi (jvf Corollary 2.13) at y bar er 0.26 med standardafvigelse 0.049 på tværs af de fire poser og inden for hver pose er den empiriske standardafvielse 0.0493, 0.0482, 0.0494 og 0.0501 for hhv. pose 1, 2, 3 og 4. 
-Til sammenligning forventer vi at det danske alphabet med 29 bogstaver (ink. W) og 9 vokaler har en populations standarderror på 0.052. Tager vi i betragtning at vi ikke har observeret værdier med egenskaben æ eller ø ved at forvente at disse ikke forekommer i ABC lakrids, vil vi forvent en populations standarderror på 0.049. 
-Så forholdet mellem konsonanter og vokaler i en pose ABC lakrids vil vi forvente rammer fordelingen af vokaler og konsinanter i afabetet.
+Fra dette finder vi (jvf Corollary 2.13) at y bar inden for hver pose er den empiriske varians 0.0025 0.0024 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
+```{R}
+id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
+                                    "O","U","Y",
+                                    "AE"), TRUE,FALSE)
+y_bar <- colSums(Dat_new[id,])/n
+var_emp <- (1-0)*y_bar*(1-y_bar)/(n-1)
+uu <- qnorm(.975)
+CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
+round(CI,2)
+```
 
-Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) i noveller e, n, d og r. Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekommer i en frekvens der minder om alfabetet eller, hvis poserne er designet til at man kan stave ord, vil vi forvente disse forekommer oftere end andre bogstaver. For simplicitet antager vi at å og ø ikke findes. Vi betragter altså et alphabet med 27 bogstaver. 
-Med de tilsvarende observertioner hvis vi trækker fra alfabetet med tilbagelægning, vil vi få en populations standardafvigelse på 0.0410, 0.0392, 0.0395 og 0.0395, hvor vi i vores tilfælde finder den empiriske standardafvigelse på 
-0.0393, 0.0383, 0.0432 og 0.0373. Hvilke må siges at være værdier tæt på hinanden.
+
+Til sammenligning forventer vi at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. vi forkaster altså ikke, at fordelingen af vokaler og konsonanter i vores stikprøver afviger fra afabetet.
+
+
+Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) forekommer bogstaverne e, n, d og r hyppigere end andre bogstaver i alphabetet. 
+Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekommer i en frekvens der minder om alfabetet eller, hvis poserne er designet til at man kan stave ord, vil vi forvente disse forekommer oftere end andre bogstaver. 
+```{R}
+id2 <- ifelse(rownames(Dat_new)%in% c("E","N","D","R"), 
+                 TRUE,FALSE)
+y_endr <- colSums(Dat_new[id2,])/n
+var_endr <- y_endr*(1-y_endr)/(n-1)
+
+CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
+round(CI,2)
+```
+
+Med 4/27 aproksimativt lig 0.15 indeholdt i samtlige konfidensintervaller. Vi kan altså ikke forkaste at e, n, d og r ikke forekommer med samme hyppighed som i alfabetet. 
 
 ## Uniformt?
 
