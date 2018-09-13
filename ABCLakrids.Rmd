@@ -14,6 +14,7 @@ Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umul
 For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategorizeres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
 Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist 79.75 men vi kan ikke observerer halve bogstaver) 
 
+## Overvejelser sammenlignet med alfabetet. (klade)
 ```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
 # Read data
 Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
@@ -33,7 +34,12 @@ legend("topleft",c("L. Mean",paste("T. Mean =",round(mean(mean,na.rm=TRUE),2))),
 Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor y_v(i) betegne indikatorfunktionen for at individ i er en en vokal.
 Fra dette finder vi (jvf Corollary 2.13) at y bar er 0.26 med standardafvigelse 0.049 på tværs af de fire poser og inden for hver pose er den empiriske standardafvielse 0.0493, 0.0482, 0.0494 og 0.0501 for hhv. pose 1, 2, 3 og 4. 
 Til sammenligning forventer vi at det danske alphabet med 29 bogstaver (ink. W) og 9 vokaler har en populations standarderror på 0.052. Tager vi i betragtning at vi ikke har observeret værdier med egenskaben æ eller ø ved at forvente at disse ikke forekommer i ABC lakrids, vil vi forvent en populations standarderror på 0.049. 
-Så forholdet mellem konsonanter og vokaler i en pose ABC lakrids vil vi forvente rammer fordelingen af vokaler og konsinanter i afabetet. 
+Så forholdet mellem konsonanter og vokaler i en pose ABC lakrids vil vi forvente rammer fordelingen af vokaler og konsinanter i afabetet.
+
+Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) i noveller e, n, d og r. Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekommer i en frekvens der minder om alfabetet eller, hvis poserne er designet til at man kan stave ord, vil vi forvente disse forekommer oftere end andre bogstaver. For simplicitet antager vi at å og ø ikke findes. Vi betragter altså et alphabet med 27 bogstaver. 
+Med de tilsvarende observertioner hvis vi trækker fra alfabetet med tilbagelægning, vil vi få en populations standardafvigelse på 0.0410, 0.0392, 0.0395 og 0.0395, hvor vi i vores tilfælde finder den empiriske standardafvigelse på 
+0.0393, 0.0383, 0.0432 og 0.0373. Hvilke må siges at være værdier tæt på hinanden.
+
 ## Uniformt?
 
 ## Test mere?

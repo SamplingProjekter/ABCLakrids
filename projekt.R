@@ -5,6 +5,10 @@ Dat_new <- matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29)
 rownames(Dat_new) <- Dat[,1]
 n_est <- sum(Dat_new,na.rm = TRUE)/4
 
+#------------------------
+#Lidt overvejelser stadig grim kode
+#----------------
+
 #calculate mean
 mean <- apply(Dat_new,1,mean)
 # Plot data
@@ -41,6 +45,27 @@ var_p <- y_barP*(1-y_barP)/colSums(Dat_new,na.rm=TRUE)
 var_t_v9 <- 1*v9*(1-v9)/n_est
 var_t_v7 <- v7*(1-v7)/n_est
 # which is very close to the variation we see in the alphabeth. 
+
+#Hyppige bogstaver i noveller
+z <- ifelse(rownames(Dat_new)%in% c("E","N","D","R"), 
+                 TRUE,FALSE)
+y_bar_endr1 <- sum(Dat_new[z,1])/sum(Dat_new[,1],na.rm = TRUE)
+y_bar_endr2 <- sum(Dat_new[z,2])/sum(Dat_new[,2],na.rm = TRUE)
+y_bar_endr3 <- sum(Dat_new[z,3])/sum(Dat_new[,3],na.rm = TRUE)
+y_bar_endr4 <- sum(Dat_new[z,4])/sum(Dat_new[,4],na.rm = TRUE)
+y_endr <- c(y_bar_endr1,y_bar_endr2,y_bar_endr3,y_bar_endr4)
+
+var_endr <- y_endr*(1-y_endr)/(colSums(Dat_new,na.rm=TRUE)-1)
+round(sqrt(var_endr),4)
+round(sqrt(4/27*(1-4/27)/colSums(Dat_new,na.rm=TRUE)),4)
+
+
+
+
+
+
+
+
 
 
 # Total number of letters pr. pag
