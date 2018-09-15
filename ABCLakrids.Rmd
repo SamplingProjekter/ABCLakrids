@@ -65,7 +65,43 @@ round(CI,2)
 
 Med 4/27 aproksimativt lig 0.15 indeholdt i samtlige konfidensintervaller. Vi kan altså ikke forkaste at e, n, d og r ikke forekommer med samme hyppighed som i alfabetet. 
 
-## Uniformt?
+## Test for uniform fordeling af bogstaverne.
+Vi vil nu teste hypotesen, at bogstaveren er uniform fordelte, dvs. om vi kan antage, at der er nogenlunde det samme antal af hver bogstav i en pakke. Vi vil hertil begynde med at betragte et histogram, som viser en fordeling af vores stikprøve. Et barplot summer over antallet af de forskellige bogstaver i \texttt{Dat\_new} og viser således et histogram af de observerede bogstaver.
+```{R, echo=FALSE, fig.width=10, fig.height=4.5, fig.cap="\\label{fig:figs} Histogram som viser fordelingen af vores stikprøve. Hver farve indikerer en pose."}
+barplot(t(Dat_new[-(28:29),]), col = rainbow(4))
+```
+
+Ud fra histogrammet kan vi ikke udelukke en uniform fordeling af bogstaverne. Vi vil nu bruge Kolomogorov-Smirnov testen til at finde en sandsynlighed for, at bogstaverne er uniform fordelte. Hertil finder vi en vektor, der indeholder tallene fra 1 til 27, som henholdsvis repræsenterer der observerede bogstaver fra \texttt{A} til \texttt{Æ}.
+```{R}
+Dat_new2 <- Dat_new[-(28:29),]
+let <- integer(sum(Dat_new2))
+i = 1
+
+for (k in 1:4){
+  for (j in 1:27){
+    while (Dat_new2[j,k] > 0){
+      let[i] = j
+      Dat_new2[j,k] = Dat_new2[j,k] - 1
+      i = i+1
+    }
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1, 27))
+```
+Sandsynligheden $p = 0.179$ argumenterer dog ikke særlig stærk for en uniform fordeling af tallene.\newline
+Som nævnt, så er der ingen forskel mellem bogstaverne \texttt{M} og \texttt{W}. Vi vil derfor gentage Kolomogorov-Smirnov testen, hvor vi først lægger antallene af observerede \texttt{M}'er og \texttt{W}'er sammen. I den følgende kodestump bliver \texttt{W} transformeret til \texttt{M}. Derefter kører vi \texttt{ks.test}.
+```{R}
+for (i in 1:324){
+  if (let[i] == 23){
+    let[i] <- 13
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1,27))
+```
+Sandsynligheden $p = 0.4266$ er allerede et meget stærkere argument for en uniform fordeling. Hvis \texttt{M} og \texttt{W} antages at være den samme bogstav, vil vi derfor ikke forkaste hypotesen om en uniform fordeling.
+
 
 ## Test mere?
 
