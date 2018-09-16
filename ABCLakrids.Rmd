@@ -8,7 +8,7 @@ fig_caption: yes
 
 ## Introduktion til data og metode
 Simon har samplet 4 poser ABC lakrids fra haribo fra en kvikly (her kan man overveje samplemetoden).
-Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen (N) formodes at være meget stor, hvorved vi må antage at 1/N og n/N er 0. 
+Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen (N) formodes at være meget stor, hvorved vi må antage at 1/N og n/N er 0, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
 I samplet har vi oberveret hvilke bogstav hver enhed har. Således er interessevariablen en indikator funktion som kan tage 29 værdier.
 Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
 For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategorizeres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
@@ -42,6 +42,8 @@ id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
                                     "AE"), TRUE,FALSE)
 y_bar <- colSums(Dat_new[id,])/n
 var_emp <- (1-0)*y_bar*(1-y_bar)/(n-1)
+sqrt(var_emp) #Standard afvigelse
+
 uu <- qnorm(.975)
 CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
 round(CI,2)
@@ -57,7 +59,9 @@ Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekomme
 id2 <- ifelse(rownames(Dat_new)%in% c("E","N","D","R"), 
                  TRUE,FALSE)
 y_endr <- colSums(Dat_new[id2,])/n
+
 var_endr <- y_endr*(1-y_endr)/(n-1)
+sqrt(var_endr) #Standard afvigelse
 
 CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
 round(CI,2)
