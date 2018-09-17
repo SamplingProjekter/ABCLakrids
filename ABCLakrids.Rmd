@@ -6,12 +6,13 @@ output: pdf_document
 fig_caption: yes
 ---
 ## Introduktion til data og metode
-Simon har samplet 4 poser ABC lakrids fra haribo fra en kvikly (her kan man overveje samplemetoden).
+Simon har samplet 4 poser ABC lakrids fra Haribo fra en kvikly (her kan man overveje samplemetoden).
 Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen ($N$) formodes at være meget stor, hvorved vi må antage at 1/N og $n/N$ er $0$, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
 I stikprøven har vi oberveret hvilke bogstaver hver enhed har. Således er interessevariablen en indikatorfunktion som kan tage 29 værdier.
 Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
 For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategoriseres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
 Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist $79.75$ men vi kan ikke observere halve bogstaver) 
+
 ##Overvejelser og problematikker med stikprøven.
 Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke vores populationsstørrelse $N$, da vi ikke ved hvor mange ABC lakridser der blevet produceret og solgt i Danmark som vi ville have haft mulighed for at købe. Derfor har vi valgt at betragte en uendelig, men dog deterministisk, populationsstørrelse. En anden problematik er at der er nogle bogstaver vi ikke kan kende forskel på, samt nogle bogstaver som vi slet ikke har samplet. Som nævnt ovenfor har vi derfor arbejdet med et alfabet med 27 bogstaver (uden ø og å). Problemstillingen med ikke at kunne se forskel på nogen bogstaver (f.eks N og Z) løste vi ved at tælle halvdelen af dem som N'er og halvdelen som Z'er. Vi mener at dette er den bedste løsning, selvom det muligvis kan introducere en lille smule bias i vores stikprøve. Man kan også overveje om det er fair at købe alle fire poser samme sted på samme tidspunkt, eller om man burde have købt dem forskellige steder, eller, på forskellige tidspunkter. Dette kan være et problem, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. 
 ## Overvejelser sammenlignet med alfabetet.

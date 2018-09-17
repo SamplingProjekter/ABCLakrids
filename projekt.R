@@ -29,7 +29,7 @@ y_v7 <- 7/27 #expected vowels based on what we sample
 
 # Empirical variance
 var_emp <- (1-0)*y_bar*(1-y_bar)/(n-1)
-var_emp
+sqtr(var_emp) #estimate the standard deviation 
 
 # True variance
 var_t_v9 <- 29/28*y_v9*(1-y_v9)
