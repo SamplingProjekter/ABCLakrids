@@ -109,5 +109,47 @@ for (i in 1:324){
 suppressWarnings(ks.test(let, "punif", 1,27))
 ```
 Sandsynligheden $p = 0.4266$ er allerede et meget stærkere argument for en uniform fordeling. Hvis \texttt{M} og \texttt{W} antages at være den samme bogstav, vil vi derfor ikke forkaste hypotesen om en uniform fordeling.
+---
+title: "Test for ens fordeling i fire poser HARIBO ABC lakrids"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Test for homogenitet
+Vi ønsker at teste, om bogstavfordelingen er den samme i de fire poser HARIBO ABC lakrids. Vi opstiller modellen
+\begin{equation*}
+M_0:X_i=(X_{i1},\ldots,X_{ij},\ldots,X_{i27}) \thicksim m(n_i,\pi)=m(n_i,(\pi_1,\ldots,\pi_{27})),
+\end{equation*}
+for $i=1,\ldots,4$.
+
+og tester hypotesen
+\begin{equation*}
+H_1:\pi_1=\dots=\pi_4.
+\end{equation*}
+
+$-2lnQ(x)$-teststørrelsen regnes til 
+\begin{equation*}
+-2lnQ(x)=2*\sum^4_{i=1}\sum^{9}_{j=1}x_{ij}ln(\frac{x_{ij}}{e_{ij}})=18,509.
+\end{equation*}
+Her er $e_{ij}$ de forventede værdier. Tabeller over disse er vedlagt i Bilag1 og Bilag2. Jævnfør Cochrans regel(ref?) skal alle de forventede v?rdier v?re st?rre eller lig 1, og h?jst 20% m? v?re mindre end 5, får vi kan bruge en $\chi^2$-approximation. I Bilag1 ses de forventede værdier, og vi ser, at de langt fra opfylder Cochrans regel, da ingen af dem er større end 5. Derfor grupperes bogstaverne i grupper af tre, og vi får da 9 grupper istedet for 27. Dette nye data samt de forventede værdier er angivet i Bilag2. Disse forventede værdier opfylder Cochrans regel, da de alle er større end 5.   
+
+Ovenstående teststørrelse giver p-værdien
+\begin{equation*}
+p_{obs}(x)=1-F_{\chi^2(4-1)(9-1)}(18,509)=0,778.
+\end{equation*}
+Altså forkastes $H_1$ ikke. Mao. vi kan ikke forkast hypotesen om at de fire poser HARIBO ABC lakridser har samme fordeling af bogstaver. 
 
 ## Konklusion
+
+## Bilag1
+\begin{center}
+\includegraphics[width=8in]{C:/Users/Lina/Documents/Sampling/ForventedeVardierUdenInddeling.pdf}
+\end{center}
+
+## Bilag2
+\begin{center}
+\includegraphics[width=8in]{C:/Users/Lina/Documents/Sampling/GruperetDataOgForventedeVardier.pdf}
+\end{center}
