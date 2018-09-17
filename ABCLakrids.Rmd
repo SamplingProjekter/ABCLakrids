@@ -5,15 +5,15 @@ date: "13 sep 2018"
 output: pdf_document
 fig_caption: yes
 ---
-
 ## Introduktion til data og metode
 Simon har samplet 4 poser ABC lakrids fra haribo fra en kvikly (her kan man overveje samplemetoden).
-Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen (N) formodes at være meget stor, hvorved vi må antage at 1/N og n/N er 0, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
-I samplet har vi oberveret hvilke bogstav hver enhed har. Således er interessevariablen en indikator funktion som kan tage 29 værdier.
+Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen ($N$) formodes at være meget stor, hvorved vi må antage at 1/N og $n/N$ er $0$, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
+I stikprøven har vi oberveret hvilke bogstaver hver enhed har. Således er interessevariablen en indikatorfunktion som kan tage 29 værdier.
 Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
-For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategorizeres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
-Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist 79.75 men vi kan ikke observerer halve bogstaver) 
-
+For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategoriseres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
+Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist $79.75$ men vi kan ikke observere halve bogstaver) 
+##Overvejelser og problematikker med stikprøven.
+Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke vores populationsstørrelse $N$, da vi ikke ved hvor mange ABC lakridser der blevet produceret og solgt i Danmark som vi ville have haft mulighed for at købe. Derfor har vi valgt at betragte en uendelig, men dog deterministisk, populationsstørrelse. En anden problematik er at der er nogle bogstaver vi ikke kan kende forskel på, samt nogle bogstaver som vi slet ikke har samplet. Som nævnt ovenfor har vi derfor arbejdet med et alfabet med 27 bogstaver (uden ø og å). Problemstillingen med ikke at kunne se forskel på nogen bogstaver (f.eks N og Z) løste vi ved at tælle halvdelen af dem som N'er og halvdelen som Z'er. Vi mener at dette er den bedste løsning, selvom det muligvis kan introducere en lille smule bias i vores stikprøve. Man kan også overveje om det er fair at købe alle fire poser samme sted på samme tidspunkt, eller om man burde have købt dem forskellige steder, eller, på forskellige tidspunkter. Dette kan være et problem, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. 
 ## Overvejelser sammenlignet med alfabetet.
 ```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
 # Read data
@@ -34,7 +34,7 @@ lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
 legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
-Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor y_v(i) betegne indikatorfunktionen for at individ i er en en vokal.
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ i er en en vokal.
 Fra dette finder vi (jvf Corollary 2.13) at y bar inden for hver pose er den empiriske varians 0.0025 0.0024 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
 ```{R}
 id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
@@ -70,12 +70,12 @@ round(CI,2)
 Med 4/27 aproksimativt lig 0.15 indeholdt i samtlige konfidensintervaller. Vi kan altså ikke forkaste at e, n, d og r ikke forekommer med samme hyppighed som i alfabetet. 
 
 ## Test for uniform fordeling af bogstaverne.
-Vi vil nu teste hypotesen, at bogstaveren er uniform fordelte, dvs. om vi kan antage, at der er nogenlunde det samme antal af hver bogstav i en pakke. Vi vil hertil begynde med at betragte et histogram, som viser en fordeling af vores stikprøve. Et barplot summer over antallet af de forskellige bogstaver i \texttt{Dat\_new} og viser således et histogram af de observerede bogstaver.
+Vi vil nu teste hypotesen, at bogstaverne er uniformt fordelte, dvs. om vi kan antage, at der er nogenlunde det samme antal af hver bogstav i en pose. Vi vil hertil begynde med at betragte et histogram, som viser en fordeling af vores stikprøve. Et barplot summer over antallet af de forskellige bogstaver i \texttt{Dat\_new} og viser således et histogram af de observerede bogstaver.
 ```{R, echo=FALSE, fig.width=10, fig.height=4.5, fig.cap="\\label{fig:figs} Histogram som viser fordelingen af vores stikprøve. Hver farve indikerer en pose."}
 barplot(t(Dat_new[-(28:29),]), col = rainbow(4))
 ```
 
-Ud fra histogrammet kan vi ikke udelukke en uniform fordeling af bogstaverne. Vi vil nu bruge Kolomogorov-Smirnov testen til at finde en sandsynlighed for, at bogstaverne er uniform fordelte. Hertil finder vi en vektor, der indeholder tallene fra 1 til 27, som henholdsvis repræsenterer der observerede bogstaver fra \texttt{A} til \texttt{Æ}.
+Ud fra histogrammet kan vi ikke udelukke en uniform fordeling af bogstaverne. Vi vil nu bruge Kolomogorov-Smirnov testet til at finde en sandsynlighed for, at bogstaverne er uniformt fordelte. Hertil finder vi en vektor, der indeholder tallene fra 1 til 27, som henholdsvis repræsenterer der observerede bogstaver fra \texttt{A} til \texttt{Æ}.
 ```{R}
 Dat_new2 <- Dat_new[-(28:29),]
 let <- integer(sum(Dat_new2))
