@@ -97,7 +97,7 @@ for (k in 1:4){
 
 suppressWarnings(ks.test(let, "punif", 1, 27))
 ```
-Sandsynligheden $p = 0.179$ argumenterer dog ikke særlig stærk for en uniform fordeling af tallene.\newline
+Sandsynligheden $p = 0.179$ forkaster ikke antagelsen om en uniform fordeling, dog argumenterer den ikke særlig stærk for en uniform fordeling af tallene.\newline
 Som nævnt, så er der ingen forskel mellem bogstaverne \texttt{M} og \texttt{W}. Vi vil derfor gentage Kolomogorov-Smirnov testen, hvor vi først lægger antallene af observerede \texttt{M}'er og \texttt{W}'er sammen. I den følgende kodestump bliver \texttt{W} transformeret til \texttt{M}. Derefter kører vi \texttt{ks.test}.
 ```{R}
 for (i in 1:324){
