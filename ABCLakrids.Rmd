@@ -39,7 +39,7 @@ legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
 Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en en vokal.
-Fra dette finder vi (jvf Corollary 2.13) at y bar inden for hver pose er den empiriske varians 0.0025 0.0024 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
+Fra dette finder vi (jvf Corollary 2.13) at $\bar y$ inden for hver pose er den empiriske varians 0.0025 0.0024 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
 ```{R}
 id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
                                     "O","U","Y",
