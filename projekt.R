@@ -15,21 +15,34 @@ lines(df,rep(mean,each=4),lty=2,lwd=1)
 lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
 legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 
+# Create fixed sample size
+set.seed(10503)
+s <- sample(c(LETTERS,"AE"),sum(n-min(n)),replace = TRUE)
+# If we reduce any counts below zero we resample, that specific element.
+n-min(n) # what to reduce. 
+dat_n <- Dat_new
+dat_n[s[1:((n-min(n))[2])],2] <- dat_n[s[1:((n-min(n))[2])],2]-1
+dat_n[s[1:((n-min(n))[3])],3] <- dat_n[s[1:((n-min(n))[3])],3]-1
+dat_n[s[1:((n-min(n))[4])],4] <- dat_n[s[1:((n-min(n))[4])],4]-1
+
+any(dat_n<0) #resample is not necessary 
+
 
 # X vokal vs. konsonant 
-id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
+k <- 75
+id <- ifelse(rownames(dat_n)%in% c("A","E","I",
                                     "O","U","Y",
                                     "AE"), TRUE,FALSE)
 # y_bar
-y_bar <- colSums(Dat_new[id,])/n
+y_bar <- colSums(dat_n[id,])/k
 
 #Population total if distiributed according to aplhabet
 y_v9 <- 9/29 #vowels in danish alphabet
 y_v7 <- 7/27 #expected vowels based on what we sample 
 
 # Empirical variance
-var_emp <- (1-0)*y_bar*(1-y_bar)/(n-1)
-sqtr(var_emp) #estimate the standard deviation 
+var_emp <- (1-0)*y_bar*(1-y_bar)/(k-1)
+sqrt(var_emp) #estimate the standard deviation 
 
 # True variance
 var_t_v9 <- 29/28*y_v9*(1-y_v9)
