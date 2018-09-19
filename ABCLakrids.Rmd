@@ -38,8 +38,8 @@ lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
 legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
-Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en en vokal.
-Fra dette finder vi (jvf Corollary 2.13) at $\bar y$ inden for hver pose er den empiriske varians 0.0025 0.0024 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk), at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en en vokal.
+Fra dette finder vi (jvf Corollary 2.13), at $\bar y$ inden for hver pose er den empiriske varians 0.0025, 0.0024, 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
 ```{R}
 id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
                                     "O","U","Y",
@@ -54,7 +54,7 @@ round(CI,2)
 ```
 
 
-Til sammenligning forventer vi at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. vi forkaster altså ikke, at fordelingen af vokaler og konsonanter i vores stikprøver afviger fra afabetet.
+Til sammenligning forventer vi, at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. vi forkaster altså ikke, at fordelingen af vokaler og konsonanter i vores stikprøver afviger fra afabetet.
 
 
 Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) forekommer bogstaverne e, n, d og r hyppigere end andre bogstaver i alphabetet. 
@@ -135,6 +135,10 @@ p_{obs}(x)=1-F_{\chi^2(4-1)(9-1)}(18,509)=0,778.
 Altså forkastes $H_1$ ikke. Mao. vi kan ikke forkast hypotesen om at de fire poser HARIBO ABC lakridser har samme fordeling af bogstaver. 
 
 ## Konklusion
+Ved SRS sampling af ABClakrids i 5 poser har vi fortaget fire undersøgelser. Undersøgelse in vokalerne forekommer oftere end konsonanterne i poserne i sammenligning med fordelingen i alfabetet. Ved denne undersøgelse blev der konkluderet, at de 7 vokaler som er inkluderet i ABClakrids ikke forekommer oftere end i alfabetet. Den næste undersøgelse omhandlet om e, r, d og n forekom oftere end andre bogstaver i ABClakrids. Her gav 95 % konfidensintervallet, at e, d, r og n kunne konkluderes, at forekomme oftere i ABClakrids end andre bogstaver. Til gengæld gav test af homogenitet, at der kunne antages at bogstaverne har samme fordeling, hvilket sammen med et histogram af data førte videre til test uniform fordeling. Her blev konklusionen, at bogstaverne var uniformt fordelt.
+
+Hvis samplings metoden skulle ændres skulle der være tages højde, at butikkerne blev random valgt og ligeledes med poserne i butikken. Derudover skulle overvejelserne omkring M og W samt N og Z, havde medført spørgsmålet: Er Z og W overhovedet i poserne, når Å og Ø ikke er? Derud over skulle overvejelserne omkring, at Å og Ø ikke forekom og om dette skulle fremkomme i datasættet.    
+
 
 ## Bilag1
 \begin{center}
