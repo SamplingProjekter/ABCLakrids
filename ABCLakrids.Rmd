@@ -146,10 +146,10 @@ Altså forkastes $H_1$ ikke. Mao. vi kan ikke forkast hypotesen om at de fire po
 
 ## Bilag1
 \begin{center}
-\includegraphics[width=8in]{C:/Users/Lina/Documents/Sampling/ForventedeVardierUdenInddeling.pdf}
+\includegraphics[width=8in]{tabeller/ForventedeVardierUdenInddeling.pdf}
 \end{center}
 
 ## Bilag2
 \begin{center}
-\includegraphics[width=8in]{C:/Users/Lina/Documents/Sampling/GruperetDataOgForventedeVardier.pdf}
+\includegraphics[width=8in]{tabeller/GruperetDataOgForventedeVardier.pdf}
 \end{center}
