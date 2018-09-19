@@ -6,19 +6,24 @@ output: pdf_document
 fig_caption: yes
 ---
 ## Introduktion til data og metode
-Simon har samplet 4 poser ABC lakrids fra Haribo fra en Kvickly (her kan man overveje samplemetoden).
-Poserne er samplet ud af af en population vi kan kalde ABC lakridser produceret til Danmark, hvor populationen ($N$) formodes at være meget stor, hvorved vi må antage at 1/N og $n/N$ er $0$, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
+
+Simon har samplet 4 poser ABC lakrids fra Haribo fra en Kvickly.
+Poserne er samplet ud af af en population vi kan kalde ABC lakridser som sælges i danske butikker d. 8. september, hvor populationen ($N$) formodes at være meget stor, hvorved vi må antage at 1/N og $n/N$ er $0$, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
 I stikprøven har vi oberveret hvilke bogstaver hver enhed har. Således er interessevariablen en indikatorfunktion som kan tage 29 værdier.
-Vi har dog måttet sande at vi ikke har observeret ø eller å og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
-For at gøre dette så neutralt som mulig, og stadig gøre det muligt at lave beregninger, har vi valgt at antage, bogstaver som kan kategoriseres som to værdier fordeles til halv halv, og at de bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
-Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist $79.75$ men vi kan ikke observere halve bogstaver) 
+Vi har dog måttet sande at hverken ø eller å er blevet observeret, og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
+Vi har derfor antaget, at bogstaver som kan kategoriseres i to værdier fordeles til halv halv, og at bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
+Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist $79.75$ men vi kan ikke observere halve bogstaver). 
 
 ## Overvejelser og problematikker med stikprøven.
-Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke vores populationsstørrelse $N$, da vi ikke ved hvor mange ABC lakridser der blevet produceret og solgt i Danmark som vi ville have haft mulighed for at købe. Derfor har vi valgt at betragte en uendelig, men dog deterministisk, populationsstørrelse. 
-En anden problematik er, at der er nogle bogstaver vi ikke kan kende forskel på, samt nogle bogstaver som vi slet ikke har samplet. Som nævnt ovenfor har vi derfor arbejdet med et alfabet med 27 bogstaver (uden ø og å). Problemstillingen med ikke at kunne se forskel på nogen bogstaver (f.eks N og Z) løste vi ved at tælle halvdelen af dem som N'er og halvdelen som Z'er. Vi mener at dette er den bedste løsning, selvom det muligvis kan introducere bias i vores stikprøve. 
-Man kan også overveje om det er unbiased alle fire poser er samplet fra samme butik på samme tidspunkt. I stedet burde man have samplet ved SRS med tilbagelægning hvilke 4 butiker i Danmark hvor poserne skulle købes, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. 
 
-## Overvejelser sammenlignet med alfabetet.
+Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke populationsstørrelse $N$, men forventer den er stor og antager derfor at $N$ er uendelig men dog deterministisk. 
+
+En anden problematik er bogstaver vi ikke kan kategoriserer med sikkerhed samt bogstaver vi ikke har samplet. 
+Som nævnt ovenfor antages derfor, at vi betragter med et alfabet med 27 bogstaver (uden ø og å). Løsningen på dette, at sorterer disse som halv halv, har dog den konsekvens, at vi muligvis introducere bias i vores stikprøve, da vi ikke med sikkerhed kan sige at der findes både z'er og N'er eller W'er og M'er.
+
+Man kan også overveje om det er unbiased alle fire poser er samplet fra samme butik på samme tidspunkt. I stedet burde man have samplet ved SRS med tilbagelægning hvilke 4 butikker i Danmark hvor poserne skulle købes, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. Grundet problematikken med at finde steder som sælger ABC lakridser, og mobalitet har vi alligevel samplet fra samme butik. 
+
+## Sammenligning af interessevariable med afhabetet
 ```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
 # Read data
 Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
@@ -38,42 +43,76 @@ lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
 legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
+<<<<<<< HEAD
 Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk), at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en en vokal.
 Fra dette finder vi (jvf Corollary 2.13), at $\bar y$ inden for hver pose er den empiriske varians 0.0025, 0.0024, 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
 ```{R}
 id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
+=======
+For at kunne anvende corollar 2.13 i noterne, antages stikprøvestørrelsen at være fast 75, som er minimum i samplet. Hvis antallet af individer overstiger dette, fjernes tilfældigt en passende mængde individer fra stikprøven (koden for dette kan findes i bilag 3). Hvis vi sampler et individ som ikke er i delpopulationen, ville vi benytte redjection sampling og sample et nyt individ fra populationen. Dette gemmes i en ny variable `dat_n`.
+```{R, result=FALSE, echo=FALSE}
+set.seed(10503)
+s <- sample(c(LETTERS,"AE"),sum(n-min(n)),replace = TRUE) #Fast n
+
+#n-min(n) #antal enheder for meget 
+dat_n <- Dat_new
+dat_n[s[1:((n-min(n))[2])],2] <- dat_n[s[1:((n-min(n))[2])],2]-1
+dat_n[s[1:((n-min(n))[3])],3] <- dat_n[s[1:((n-min(n))[3])],3]-1
+dat_n[s[1:((n-min(n))[4])],4] <- dat_n[s[1:((n-min(n))[4])],4]-1
+
+#any(dat_n<0)
+```
+
+For simplificering betragter vi i følgende, en gruppe af bogstaver ad gangen. fx individer med interessevaribel værende en vokal. 
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en vokal.
+
+i så fald er $\bar y$ inden for hver pose 0.2400 0.2400 0.2533 og 0.2667, med standardavfigelse 0.0496 0.0496 0.0506 og 0.0514 igen for hver pose. Konfidens interval for hver pose er som følger,
+
+```{R, echo=FALSE}
+k <- 75
+id <- ifelse(rownames(dat_n)%in% c("A","E","I",
+>>>>>>> 4bdd2830aa2410edff26fa6b86821f4fd74a61b5
                                     "O","U","Y",
                                     "AE"), TRUE,FALSE)
-y_bar <- colSums(Dat_new[id,])/n
-var_emp <- (1-0)*y_bar*(1-y_bar)/(n-1)
-sqrt(var_emp) #Standard afvigelse
+y_bar <- colSums(dat_n[id,])/k
+var_emp <- (1-0)*y_bar*(1-y_bar)/(k-1)
 
 uu <- qnorm(.975)
 CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
-round(CI,2)
+#CI 
+round(CI,4)
 ```
+<<<<<<< HEAD
 
 
 Til sammenligning forventer vi, at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. vi forkaster altså ikke, at fordelingen af vokaler og konsonanter i vores stikprøver afviger fra afabetet.
+=======
+R-koden kan findes i Bilag 3 del 1
+Til sammenligning forventer vi at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. Det virker altså ikke urimeligt, at forekomsten af vokaler i stikprøverne svarer til forekomsten af vokaler i afabetet.
+>>>>>>> 4bdd2830aa2410edff26fa6b86821f4fd74a61b5
 
 
 Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) forekommer bogstaverne e, n, d og r hyppigere end andre bogstaver i alphabetet. 
 Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekommer i en frekvens der minder om alfabetet eller, hvis poserne er designet til at man kan stave ord, vil vi forvente disse forekommer oftere end andre bogstaver. 
-```{R}
-id2 <- ifelse(rownames(Dat_new)%in% c("E","N","D","R"), 
+Vi får standard afvigelserne,
+```{R, echo=FALSE}
+id2 <- ifelse(rownames(dat_n)%in% c("E","N","D","R"), 
                  TRUE,FALSE)
-y_endr <- colSums(Dat_new[id2,])/n
+y_endr <- colSums(dat_n[id2,])/k
 
-var_endr <- y_endr*(1-y_endr)/(n-1)
-sqrt(var_endr) #Standard afvigelse
-
-CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
-round(CI,2)
+var_endr <- y_endr*(1-y_endr)/(k-1)
+round(sqrt(var_endr),4)
 ```
-
-Med 4/27 aproksimativt lig 0.15 indeholdt i samtlige konfidensintervaller. Vi kan altså ikke forkaste at e, n, d og r ikke forekommer med samme hyppighed som i alfabetet. 
+og følgende konfidensintervaller
+```{R, echo=FALSE}
+CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
+round(CI,4)
+```
+Al R-koden kan findes i bilag 3 del 2.
+Bemærk, at 4/27 aproksimativt 0.15 indeholdt i samtlige konfidensintervaller. Kan vi ikke forkaste at bogstaverne e, n, d og r forekommer med samme hyppighed som i alfabetet, og det virker derfor rimeligt at overveje om fordelingen af bogstaver er uniform.  
 
 ## Test for uniform fordeling af bogstaverne.
+
 Vi vil nu teste hypotesen, at bogstaverne er uniformt fordelte, dvs. om vi kan antage, at der er nogenlunde det samme antal af hver bogstav i en pose. Vi vil hertil begynde med at betragte et histogram, som viser en fordeling af vores stikprøve. Et barplot summer over antallet af de forskellige bogstaver i \texttt{Dat\_new} og viser således et histogram af de observerede bogstaver.
 ```{R, echo=FALSE, fig.width=10, fig.height=4.5, fig.cap="\\label{fig:figs} Histogram som viser fordelingen af vores stikprøve. Hver farve indikerer en pose."}
 barplot(t(Dat_new[-(28:29),]), col = rainbow(4))
@@ -149,3 +188,47 @@ Hvis samplings metoden skulle ændres skulle der være tages højde, at butikker
 \begin{center}
 \includegraphics[width=8in]{tabeller/GruperetDataOgForventedeVardier.pdf}
 \end{center}
+
+## Bilag 3
+
+```{R}
+set.seed(10503)
+s <- sample(c(LETTERS,"AE"),sum(n-min(n)),replace = TRUE) #Fast n
+
+n-min(n) #antal enheder for meget 
+dat_n <- Dat_new
+dat_n[s[1:((n-min(n))[2])],2] <- dat_n[s[1:((n-min(n))[2])],2]-1
+dat_n[s[1:((n-min(n))[3])],3] <- dat_n[s[1:((n-min(n))[3])],3]-1
+dat_n[s[1:((n-min(n))[4])],4] <- dat_n[s[1:((n-min(n))[4])],4]-1
+
+any(dat_n<0)
+```
+
+# Del 1
+
+```{R}
+k <- 75
+id <- ifelse(rownames(dat_n)%in% c("A","E","I",
+                                    "O","U","Y",
+                                    "AE"), TRUE,FALSE)
+y_bar <- colSums(dat_n[id,])/k
+var_emp <- (1-0)*y_bar*(1-y_bar)/(k-1)
+
+uu <- qnorm(.975)
+CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
+#CI 
+round(CI,4)
+```
+
+#Del 2
+```{R}
+id2 <- ifelse(rownames(dat_n)%in% c("E","N","D","R"), 
+                 TRUE,FALSE)
+y_endr <- colSums(dat_n[id2,])/k
+
+var_endr <- y_endr*(1-y_endr)/(k-1)
+round(sqrt(var_endr),4)
+
+CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
+round(CI,2)
+```
