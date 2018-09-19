@@ -109,16 +109,8 @@ for (i in 1:324){
 suppressWarnings(ks.test(let, "punif", 1,27))
 ```
 Sandsynligheden $p = 0.4266$ er allerede et meget stærkere argument for en uniform fordeling. Hvis \texttt{M} og \texttt{W} antages at være den samme bogstav, vil vi derfor ikke forkaste hypotesen om en uniform fordeling.
----
-title: "Test for ens fordeling i fire poser HARIBO ABC lakrids"
-output: pdf_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Test for homogenitet
+## Test for ens fordeling i fire poser HARIBO ABC lakrids
 Vi ønsker at teste, om bogstavfordelingen er den samme i de fire poser HARIBO ABC lakrids. Vi opstiller modellen
 \begin{equation*}
 M_0:X_i=(X_{i1},\ldots,X_{ij},\ldots,X_{i27}) \thicksim m(n_i,\pi)=m(n_i,(\pi_1,\ldots,\pi_{27})),
