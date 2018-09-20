@@ -180,7 +180,7 @@ Hvis samplings metoden skulle ændres skulle der være tages højde, at butikker
 ## Bilag 3
 
 ### R kode for at hente data og lave figur 1
-```{R}
+```{R, include=FALSE}
 # Read data
 Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
 #Formate data as matrix
