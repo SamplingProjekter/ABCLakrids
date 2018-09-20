@@ -18,12 +18,13 @@ Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger 
 
 Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke populationsstørrelse $N$, men forventer den er stor og antager derfor at $N$ er uendelig men dog deterministisk. 
 
-En anden problematik er bogstaver vi ikke kan kategoriserer med sikkerhed samt bogstaver vi ikke har samplet. 
-Som nævnt ovenfor antages derfor, at vi betragter med et alfabet med 27 bogstaver (uden ø og å). Løsningen på dette, at sorterer disse som halv halv, har dog den konsekvens, at vi muligvis introducere bias i vores stikprøve, da vi ikke med sikkerhed kan sige at der findes både z'er og N'er eller W'er og M'er.
+En anden problematik er bogstaver vi ikke kan kategorisere med sikkerhed samt bogstaver vi ikke har samplet. 
+Som nævnt ovenfor antages derfor, at vi betragter med et alfabet med 27 bogstaver (uden ø og å, inklusiv w).
+Det er også bogstaver som vi ikke umiddelbart kan se forskel på f.eks. Z'er og N'er. Løsningen på dette,er  at sortere disse som halv halv, det har dog den konsekvens, at vi muligvis introducere bias i vores stikprøve, da vi ikke med sikkerhed kan sige at der findes både z'er og N'er eller W'er og M'er.
 
 Man kan også overveje om det er unbiased alle fire poser er samplet fra samme butik på samme tidspunkt. I stedet burde man have samplet ved SRS med tilbagelægning hvilke 4 butikker i Danmark hvor poserne skulle købes, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. Grundet problematikken med at finde steder som sælger ABC lakridser, og mobalitet har vi alligevel samplet fra samme butik. 
 
-## Sammenligning af interessevariable med afhabetet
+## Sammenligning af interessevariable med alfabetet
 ```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
 # Read data
 Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
@@ -44,10 +45,10 @@ legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
 ```
 
 <<<<<<< HEAD
-Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk), at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en en vokal.
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk), at vi har en rimelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en vokal.
 Fra dette finder vi (jvf Corollary 2.13), at $\bar y$ inden for hver pose er den empiriske varians 0.0025, 0.0024, 0.0025 og 0.0025 for hhv. pose 1, 2, 3 og 4. med konfidens interval for hver af de givne poser som følgende.
 ```{R}
-id <- ifelse(rownames(Dat_new)%in% c("A","E","I",
+id <- ifelse(rownames(Dat_new)%in% c("A","E","I","O","U","Y","Æ")
 =======
 For at kunne anvende corollar 2.13 i noterne, antages stikprøvestørrelsen at være fast 75, som er minimum i samplet. Hvis antallet af individer overstiger dette, fjernes tilfældigt en passende mængde individer fra stikprøven (koden for dette kan findes i bilag 3). Hvis vi sampler et individ som ikke er i delpopulationen, ville vi benytte redjection sampling og sample et nyt individ fra populationen. Dette gemmes i en ny variable `dat_n`.
 ```{R, result=FALSE, echo=FALSE}
