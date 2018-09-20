@@ -1,0 +1,275 @@
+---
+title: "ABCLakrids"
+author: "Smilk"
+date: "13 sep 2018"
+output: pdf_document
+fig_caption: yes
+---
+## Introduktion til data og metode
+
+Simon har samplet 4 poser ABC lakrids fra Haribo fra en Kvickly.
+Poserne er samplet ud af af en population vi kan kalde ABC lakridser som sælges i danske butikker d. 8. september, hvor populationen ($N$) formodes at være meget stor, hvorved vi må antage at 1/N og $n/N$ er $0$, hvilket også betyder at vores estimat for populationstotalen vil være uendelig. 
+I stikprøven har vi oberveret hvilke bogstaver hver enhed har. Således er interessevariablen en indikatorfunktion som kan tage 29 værdier.
+Vi har dog måttet sande at hverken ø eller å er blevet observeret, og at det er umuligt at skeldne mellem M og W og Z og N, da det ikke fremgår klart hvordan de respektive bogstaver bør se ud. 
+Vi har derfor antaget, at bogstaver som kan kategoriseres i to værdier fordeles til halv halv, og at bogstaver som ikke er observeret ikke forekommer i totalpopulationen. 
+Hver pose betragtes som en sample, af størrelse n (stokastisk værdi afhænger af vægten, da antallet af bogstaver varierer i hver pose). Det gennemsnitlige antal bogstaver pr pose er 80 (mere præcist $79.75$ men vi kan ikke observere halve bogstaver). 
+
+## Overvejelser og problematikker med stikprøven.
+
+Det er en række forskellige eventuelle problemer med vores stikprøve, som vi er nød til at behandle inden vi laver beregninger på data. Som nævnt ovenfor kender vi ikke populationsstørrelse $N$, men forventer den er stor og antager derfor at $N$ er uendelig men dog deterministisk. 
+
+En anden problematik er bogstaver vi ikke kan kategoriserer med sikkerhed samt bogstaver vi ikke har samplet. 
+Som nævnt ovenfor antages derfor, at vi betragter med et alfabet med 27 bogstaver (uden ø og å). Løsningen på dette, at sorterer disse som halv halv, har dog den konsekvens, at vi muligvis introducere bias i vores stikprøve, da vi ikke med sikkerhed kan sige at der findes både z'er og N'er eller W'er og M'er.
+
+Man kan også overveje om det er unbiased alle fire poser er samplet fra samme butik på samme tidspunkt. I stedet burde man have samplet ved SRS med tilbagelægning hvilke 4 butikker i Danmark hvor poserne skulle købes, da vi jo a priori ikke ved om det kunne skabe en bias i vores sample inden vi laver eksperimentet. Grundet problematikken med at finde steder som sælger ABC lakridser, og mobalitet har vi alligevel samplet fra samme butik. 
+
+## Sammenligning af interessevariable med afhabetet
+```{R, echo=FALSE, fig.width=10, fig.height=3.5, fig.cap="\\label{fig:figs} Bogstaver samplet fra de forskellige poser. Hver farvet bar indikerer en pose. Den sorte linje (L. Mean) viser gennemsnittet for hver bogstav over de 4 poser, mens den røde linje angiver gennemsnittet over alle bogstaver på tværs af poser"}
+# Read data
+Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
+#Formate data as matrix
+Dat_new <- na.omit(matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29))
+rownames(Dat_new) <- Dat[-c(28,29),1]
+
+# Sample size
+n <- colSums(Dat_new)
+n_mean <- sum(Dat_new)/4
+
+# Plot data
+mean <- apply(Dat_new,1,mean)
+df <- barplot(t(Dat_new),beside=TRUE,col = rainbow(4))
+lines(df,rep(mean,each=4),lty=2,lwd=1)
+lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
+legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
+```
+
+For at kunne anvende corollar 2.13 i noterne, antages stikprøvestørrelsen at være fast 75, som er minimum i samplet. Hvis antallet af individer overstiger dette, fjernes tilfældigt en passende mængde individer fra stikprøven (koden for dette kan findes i bilag 3). Hvis vi sampler et individ som ikke er i delpopulationen, ville vi benytte redjection sampling og sample et nyt individ fra populationen. Dette gemmes i en ny variable `dat_n`.
+```{R, result=FALSE, echo=FALSE}
+set.seed(10503)
+s <- sample(c(LETTERS,"AE"),sum(n-min(n)),replace = TRUE) #Fast n
+
+#n-min(n) #antal enheder for meget 
+dat_n <- Dat_new
+dat_n[s[1:((n-min(n))[2])],2] <- dat_n[s[1:((n-min(n))[2])],2]-1
+dat_n[s[1:((n-min(n))[3])],3] <- dat_n[s[1:((n-min(n))[3])],3]-1
+dat_n[s[1:((n-min(n))[4])],4] <- dat_n[s[1:((n-min(n))[4])],4]-1
+
+#any(dat_n<0)
+```
+
+For simplificering betragter vi i følgende, en gruppe af bogstaver ad gangen. fx individer med interessevaribel værende en vokal. 
+Hvis vi ønsker at skrive et bestemt ord, kræver det ofte (i alt fald på dansk) at vi har en rimmelig mængde af vokaler til rådighed. Lad derfor $y_v(i)$ betegne indikatorfunktionen for at individ $i$ er en vokal.
+
+i så fald er $\bar y$ inden for hver pose 0.2400 0.2400 0.2533 og 0.2667, med standardavfigelse 0.0496 0.0496 0.0506 og 0.0514 igen for hver pose. Konfidens interval for hver pose er som følger,
+
+```{R, echo=FALSE}
+k <- 75
+id <- ifelse(rownames(dat_n)%in% c("A","E","I",
+                                    "O","U","Y",
+                                    "AE"), TRUE,FALSE)
+y_bar <- colSums(dat_n[id,])/k
+var_emp <- (1-0)*y_bar*(1-y_bar)/(k-1)
+
+uu <- qnorm(.975)
+CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
+#CI 
+round(CI,4)
+```
+R-koden kan findes i Bilag 3 del 1
+Til sammenligning forventer vi at det danske alphabet med 27 bogstaver (ink. W ekls. ø og å) og 7 vokaler har en forekomst af vokaler på 0.26. Det virker altså ikke urimeligt, at forekomsten af vokaler i stikprøverne svarer til forekomsten af vokaler i afabetet.
+
+
+Ifølge sproget.dk (https://sproget.dk/temaer/ord-og-bogstaver/hvad-er-de-mest-almindelige-bogstaver-pa-dansk#kilder-kjeld-kristensen-bogstavernes d. 13/9) forekommer bogstaverne e, n, d og r hyppigere end andre bogstaver i alphabetet. 
+Lad os derfor gøre tilsvarende som ovenfor for at undersøge om disse forekommer i en frekvens der minder om alfabetet eller, hvis poserne er designet til at man kan stave ord, vil vi forvente disse forekommer oftere end andre bogstaver. 
+Vi får standard afvigelserne,
+```{R, echo=FALSE}
+id2 <- ifelse(rownames(dat_n)%in% c("E","N","D","R"), 
+                 TRUE,FALSE)
+y_endr <- colSums(dat_n[id2,])/k
+
+var_endr <- y_endr*(1-y_endr)/(k-1)
+round(sqrt(var_endr),4)
+```
+og følgende konfidensintervaller
+```{R, echo=FALSE}
+CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
+round(CI,4)
+```
+Al R-koden kan findes i bilag 3 del 2.
+Bemærk, at 4/27 aproksimativt 0.15 er indeholdt i samtlige konfidensintervaller. Kan vi ikke forkaste at bogstaverne e, n, d og r forekommer med samme hyppighed som i alfabetet, og det virker derfor rimeligt at overveje om fordelingen af bogstaver er ens. 
+
+## Test for ens fordeling
+
+Vi ønsker at teste, om bogstavfordelingen er den samme i de fire poser HARIBO ABC lakrids. Vi opstiller modellen
+\begin{equation*}
+M_0:X_i=(X_{i1},\ldots,X_{ij},\ldots,X_{i27}) \thicksim m(n_i,\pi)=m(n_i,(\pi_1,\ldots,\pi_{27})),
+\end{equation*}
+for $i=1,\ldots,4$.
+
+og tester hypotesen
+\begin{equation*}
+H_1:\pi_1=\dots=\pi_4.
+\end{equation*}
+
+$-2lnQ(x)$-teststørrelsen regnes til 
+\begin{equation*}
+-2lnQ(x)=2*\sum^4_{i=1}\sum^{9}_{j=1}x_{ij}ln(\frac{x_{ij}}{e_{ij}})=18,509.
+\end{equation*}
+Her er $e_{ij}$ de forventede værdier. Tabeller over disse er vedlagt i Bilag1 og Bilag2. Jævnfør Cochrans regel skal alle de forventede værdier være større eller lig 1, og højst 20% af de forventede værdier må være mindre end 5, før vi kan bruge en $\chi^2$-approximation. I Bilag1 ses de forventede værdier, og vi ser, at de langt fra opfylder Cochrans regel, da ingen af dem er større end 5. Derfor grupperes bogstaverne i grupper af tre, og vi får da 9 grupper istedet for 27. Dette nye data samt de forventede værdier er angivet i Bilag2. Disse forventede værdier opfylder Cochrans regel, da de alle er større end 5.   
+
+Ovenstående teststørrelse giver p-værdien
+\begin{equation*}
+p_{obs}(x)=1-F_{\chi^2(4-1)(9-1)}(18,509)=0,778.
+\end{equation*}
+Altså forkastes $H_1$ ikke. Mao. vi kan ikke forkast hypotesen om at de fire poser HARIBO ABC lakridser har samme fordeling af bogstaver. 
+
+## Test for uniform fordeling af bogstaverne.
+
+Vi vil nu teste hypotesen, om bogstaverne er uniformt fordelte. Vi vil hertil begynde med at betragte et histogram, som viser en fordeling af vores stikprøve. Et barplot summer over antallet af de forskellige bogstaver i \texttt{Dat\_new} og viser således et histogram af de observerede bogstaver.
+```{R, echo=FALSE, fig.width=10, fig.height=4.5, fig.cap="\\label{fig:figs} Histogram som viser fordelingen af vores stikprøve. Hver farve indikerer en pose."}
+barplot(t(Dat_new[-(28:29),]), col = rainbow(4))
+```
+
+Ud fra histogrammet kan vi ikke udelukke en uniform fordeling af bogstaverne. Vi vil nu bruge Kolomogorov-Smirnov testen til at finde en sandsynlighed for, at bogstaverne er uniformt fordelte. Hertil finder vi en vektor, der indeholder tallene fra 1 til 27, som henholdsvis repræsenterer der observerede bogstaver fra \texttt{A} til \texttt{Æ}. Se billag 4 for R kode.
+```{R, echo =FALSE}
+Dat_new2 <- Dat_new[-(28:29),]
+let <- integer(sum(Dat_new2))
+i = 1
+
+for (k in 1:4){
+  for (j in 1:27){
+    while (Dat_new2[j,k] > 0){
+      let[i] = j
+      Dat_new2[j,k] = Dat_new2[j,k] - 1
+      i = i+1
+    }
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1, 27))
+```
+Sandsynligheden $p = 0.179$ forkaster ikke antagelsen om en uniform fordeling, dog argumenterer den ikke særlig stærk for en uniform fordeling af tallene.\newline
+Som nævnt, så er der ingen forskel mellem bogstaverne \texttt{M} og \texttt{W}. Vi vil derfor gentage Kolomogorov-Smirnov testen, hvor vi først lægger antallene af observerede \texttt{M}'er og \texttt{W}'er sammen. I den følgende kodestump bliver \texttt{W} transformeret til \texttt{M}. Derefter kører vi \texttt{ks.test} (Se bilag 4 del 1 for R-Kode).
+```{R,echo=FALSE}
+for (i in 1:324){
+  if (let[i] == 23){
+    let[i] <- 13
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1,27))
+```
+Sandsynligheden $p = 0.4266$ er allerede et meget stærkere argument for en uniform fordeling. Hvis \texttt{M} og \texttt{W} antages at være den samme bogstav, vil vi altså ikke forkaste hypotesen med en større p-værdi end før.
+
+## Konklusion
+
+Ved SRS sampling af ABClakrids i 5 poser har vi fortaget fire undersøgelser. Undersøgelse in vokalerne forekommer oftere end konsonanterne i poserne i sammenligning med fordelingen i alfabetet. Ved denne undersøgelse blev der konkluderet, at de 7 vokaler som er inkluderet i ABClakrids ikke forekommer oftere end i alfabetet. Den næste undersøgelse omhandlet om e, r, d og n forekom oftere end andre bogstaver i ABClakrids. Her gav 95 % konfidensintervallet, at e, d, r og n kunne konkluderes, at forekomme oftere i ABClakrids end andre bogstaver. Til gengæld gav test af homogenitet, at der kunne antages at bogstaverne har samme fordeling, hvilket sammen med et histogram af data førte videre til test uniform fordeling. Her blev konklusionen, at bogstaverne var uniformt fordelt.
+
+Hvis samplings metoden skulle ændres skulle der være tages højde, at butikkerne blev random valgt og ligeledes med poserne i butikken. Derudover skulle overvejelserne omkring M og W samt N og Z, havde medført spørgsmålet: Er Z og W overhovedet i poserne, når Å og Ø ikke er? Derud over skulle overvejelserne omkring, at Å og Ø ikke forekom og om dette skulle fremkomme i datasættet.  
+
+## Bilag 1
+\begin{center}
+\includegraphics[width=7in]{tabeller/ForventedeVardierUdenInddeling.pdf}
+\end{center}
+
+## Bilag 2
+\begin{center}
+\includegraphics[width=6in]{tabeller/GruperetDataOgForventedeVardier.pdf}
+\end{center}
+
+## Bilag 3
+
+### R kode for at hente data og lave figur 1
+```{R}
+# Read data
+Dat <- as.matrix(read.table("Data.R", sep="",head=TRUE,fill = TRUE))
+#Formate data as matrix
+Dat_new <- na.omit(matrix(as.numeric(Dat[,-1]),ncol=4,nrow=29))
+rownames(Dat_new) <- Dat[-c(28,29),1]
+
+# Sample size
+n <- colSums(Dat_new)
+n_mean <- sum(Dat_new)/4
+
+# Plot data
+mean <- apply(Dat_new,1,mean)
+df <- barplot(t(Dat_new),beside=TRUE,col = rainbow(4))
+lines(df,rep(mean,each=4),lty=2,lwd=1)
+lines(df,rep(mean(mean),each=length(df)),lty=2,col="red")
+legend("topleft",c("L. Mean","T. Mean"),lty = 2,col=c("black","red"))
+```
+
+### R kode til sikre fast stikprøvestørrelsetil beregningerne
+```{R}
+set.seed(10503) # For others to get same result
+s <- sample(c(LETTERS,"AE"),sum(n-min(n)),replace = TRUE) #Sample values to be removed
+
+n-min(n) #antal enheder for meget 
+dat_n <- Dat_new # create new dataset
+dat_n[s[1:((n-min(n))[2])],2] <- dat_n[s[1:((n-min(n))[2])],2]-1
+dat_n[s[1:((n-min(n))[3])],3] <- dat_n[s[1:((n-min(n))[3])],3]-1
+dat_n[s[1:((n-min(n))[4])],4] <- dat_n[s[1:((n-min(n))[4])],4]-1
+
+# test if we need to sample any values again
+any(dat_n<0)
+```
+
+# Del 1
+Beregninger for gennemsnittet af interessevariablen vokal eller ej.
+```{R}
+k <- 75
+id <- ifelse(rownames(dat_n)%in% c("A","E","I",
+                                    "O","U","Y",
+                                    "AE"), TRUE,FALSE)
+y_bar <- colSums(dat_n[id,])/k
+var_emp <- (1-0)*y_bar*(1-y_bar)/(k-1)
+
+uu <- qnorm(.975)
+CI <- cbind(y_bar-uu*sqrt(var_emp),y_bar+uu*sqrt(var_emp))
+#CI 
+round(CI,4)
+```
+
+#Del 2
+Beregninger for hyppigt forekomne bogstaver.
+```{R}
+id2 <- ifelse(rownames(dat_n)%in% c("E","N","D","R"), 
+                 TRUE,FALSE)
+y_endr <- colSums(dat_n[id2,])/k
+
+var_endr <- y_endr*(1-y_endr)/(k-1)
+round(sqrt(var_endr),4)
+
+CI <- cbind(y_endr-uu*sqrt(var_endr),y_endr+uu*sqrt(var_endr))
+round(CI,2)
+```
+
+# Bilag 4
+```{R,}
+Dat_new2 <- Dat_new[-(28:29),]
+let <- integer(sum(Dat_new2))
+i = 1
+
+for (k in 1:4){
+  for (j in 1:27){
+    while (Dat_new2[j,k] > 0){
+      let[i] = j
+      Dat_new2[j,k] = Dat_new2[j,k] - 1
+      i = i+1
+    }
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1, 27))
+```
+
+# del 1
+```{R,echo=FALSE}
+for (i in 1:324){
+  if (let[i] == 23){
+    let[i] <- 13
+  }
+}
+
+suppressWarnings(ks.test(let, "punif", 1,27))
+```
